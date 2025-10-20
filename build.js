@@ -1,6 +1,11 @@
-const { execSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
+import { execSync } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// 获取当前文件的目录路径
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // 确保dist目录存在
 const distDir = path.join(__dirname, 'dist');
@@ -25,7 +30,7 @@ try {
 // 构建完成后的操作
 console.log('生成构建信息文件...');
 const buildInfo = {
-  version: require('./package.json').version,
+  version: '1.0.0', // 硬编码版本号，避免require语法
   buildTime: new Date().toISOString(),
   environment: 'production'
 };
