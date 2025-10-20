@@ -11,7 +11,7 @@ export default defineConfig(({ command, mode }) => {
     optimizeDeps: {
       exclude: ['lucide-react'],
     },
-    base: mode === 'production' ? env.VITE_BASE_URL || '/' : '/',
+    base: mode === 'production' ? '/memyzn/' : '/',
     build: {
       outDir: 'dist',
       minify: 'terser',
