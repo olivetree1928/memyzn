@@ -110,7 +110,7 @@ const content: Record<Language, Content> = {
 
 function App() {
   const [language, setLanguage] = useState<Language>('zh');
-  const [theme, setTheme] = useState<Theme>('light');
+  const [theme, setTheme] = useState<Theme>('dark');
   // 初始值为0，将从数据库加载实际数据
   const [candles, setCandles] = useState(0);
   const [flowers, setFlowers] = useState(0);
