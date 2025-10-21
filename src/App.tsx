@@ -119,34 +119,9 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const t = content[language];
   
-  // 从数据库加载蜡烛和鲜花计数
+  // 组件挂载时加载数据
   useEffect(() => {
-    const fetchTributeCounts = async () => {
-      try {
-        setLoading(true);
-        // 从yzn_tributes表获取计数数据
-        const { data, error } = await supabase
-          .from('yzn_tributes')
-          .select('candles, flowers')
-          .single();
-          
-        if (error) {
-          console.error('Error fetching tribute counts:', error);
-          setError('加载数据失败');
-        } else if (data) {
-          // 更新状态
-          setCandles(data.candles || 0);
-          setFlowers(data.flowers || 0);
-        }
-      } catch (err) {
-        console.error('Error fetching tribute counts:', err);
-        setError('加载数据失败');
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchTributeCounts();
+    fetchTributes();
   }, []);
   
   // 添加贡品计数函数
@@ -196,43 +171,30 @@ function App() {
     }
   };
 
-  // 立即加载数据
-  useEffect(() => {
-    console.log('Component mounted, using local mock data');
-    // 尝试从localStorage获取数据
-    const savedCandles = localStorage.getItem('yzn_candles');
-    const savedFlowers = localStorage.getItem('yzn_flowers');
-    
-    if (savedCandles) {
-      setCandles(parseInt(savedCandles, 10));
-    }
-    
-    if (savedFlowers) {
-      setFlowers(parseInt(savedFlowers, 10));
-    }
-    
-    // 不再尝试连接Supabase
-    setError(null);
-  }, []);
-
-  const fetchTributes = () => {
-    setLoading(true);
-    setError(null);
-    
+  // 从数据库获取贡品数据
+  const fetchTributes = async () => {
     try {
-      console.log('Fetching tributes from localStorage...');
-      // 从localStorage获取数据
-      const savedCandles = localStorage.getItem('yzn_candles');
-      const savedFlowers = localStorage.getItem('yzn_flowers');
+      setLoading(true);
+      setError(null);
       
-      // 设置数据，如果不存在则使用默认值
-      setCandles(savedCandles ? parseInt(savedCandles, 10) : 50);
-      setFlowers(savedFlowers ? parseInt(savedFlowers, 10) : 20);
-      
-      console.log('Tributes data loaded from localStorage');
-    } catch (error) {
-      console.error('Exception in fetchTributes:', error);
-      setError(`获取数据异常: ${error}`);
+      // 从yzn_tributes表获取计数数据
+      const { data, error } = await supabase
+        .from('yzn_tributes')
+        .select('candles, flowers')
+        .single();
+        
+      if (error) {
+        console.error('Error fetching tribute counts:', error);
+        setError('加载数据失败');
+      } else if (data) {
+        // 更新状态
+        setCandles(data.candles || 0);
+        setFlowers(data.flowers || 0);
+        console.log('数据已从数据库加载:', data);
+      }
+    } catch (err) {
+      console.error('Error fetching tribute counts:', err);
+      setError('加载数据失败');
     } finally {
       setLoading(false);
     }
