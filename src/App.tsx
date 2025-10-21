@@ -128,25 +128,28 @@ function App() {
   const addTribute = async (type: TributeType) => {
     try {
       setSending(type);
+      setError(null); // 清除之前的错误
       
       // 获取当前数据库中的计数
       const { data: currentData, error: fetchError } = await supabase
-        .from('yzn_tributes')
+        .from('tributes')
         .select('id, candles, flowers')
         .single();
         
       if (fetchError) {
         console.error('Error fetching current counts:', fetchError);
+        setError('获取数据失败，请稍后重试');
+        setSending(null);
         return;
       }
       
       // 计算新的计数值
-      const newCandleCount = type === 'candle' ? (currentData.candles || 0) + 1 : currentData.candles;
-      const newFlowerCount = type === 'flower' ? (currentData.flowers || 0) + 1 : currentData.flowers;
+      const newCandleCount = type === 'candle' ? (currentData.candles || 0) + 1 : (currentData.candles || 0);
+      const newFlowerCount = type === 'flower' ? (currentData.flowers || 0) + 1 : (currentData.flowers || 0);
       
       // 更新数据库中的计数
       const { error: dbError } = await supabase
-        .from('yzn_tributes')
+        .from('tributes')
         .update({ 
           candles: newCandleCount,
           flowers: newFlowerCount,
@@ -156,12 +159,15 @@ function App() {
         
       if (dbError) {
         console.error('Error updating database:', dbError);
-        // 即使数据库存储失败，也不影响用户体验
-      } else {
-        // 更新本地状态以匹配数据库
-        setCandles(newCandleCount);
-        setFlowers(newFlowerCount);
+        setError('更新数据失败，请稍后重试');
+        setSending(null);
+        return;
       }
+      
+      // 数据库更新成功，更新本地状态
+      setCandles(newCandleCount);
+      setFlowers(newFlowerCount);
+      console.log(`${type === 'candle' ? '蜡烛' : '鲜花'}计数已更新:`, { candles: newCandleCount, flowers: newFlowerCount });
       
       setSending(null);
     } catch (error) {
@@ -177,24 +183,38 @@ function App() {
       setLoading(true);
       setError(null);
       
-      // 从yzn_tributes表获取计数数据
+      console.log('正在从数据库加载贡品数据...');
+      
+      // 从tributes表获取计数数据
       const { data, error } = await supabase
-        .from('yzn_tributes')
-        .select('candles, flowers')
+        .from('tributes')
+        .select('candles, flowers, updated_at')
         .single();
         
       if (error) {
         console.error('Error fetching tribute counts:', error);
-        setError('加载数据失败');
-      } else if (data) {
+        setError('加载数据失败，请检查网络连接');
+        return;
+      }
+      
+      if (data) {
         // 更新状态
-        setCandles(data.candles || 0);
-        setFlowers(data.flowers || 0);
-        console.log('数据已从数据库加载:', data);
+        const candleCount = data.candles || 0;
+        const flowerCount = data.flowers || 0;
+        setCandles(candleCount);
+        setFlowers(flowerCount);
+        console.log('数据已从数据库加载:', { 
+          candles: candleCount, 
+          flowers: flowerCount, 
+          updated_at: data.updated_at 
+        });
+      } else {
+        console.warn('数据库中没有找到数据');
+        setError('数据库中没有数据');
       }
     } catch (err) {
       console.error('Error fetching tribute counts:', err);
-      setError('加载数据失败');
+      setError('加载数据失败，请稍后重试');
     } finally {
       setLoading(false);
     }
@@ -208,31 +228,8 @@ function App() {
   const sendTribute = (type: 'candle' | 'flower') => {
     setSending(type);
     
-    try {
-      // 更新本地状态
-      if (type === 'candle') {
-        setCandles(prev => {
-          const newValue = prev + 1;
-          // 保存到localStorage
-          localStorage.setItem('yzn_candles', newValue.toString());
-          return newValue;
-        });
-      } else {
-        setFlowers(prev => {
-          const newValue = prev + 1;
-          // 保存到localStorage
-          localStorage.setItem('yzn_flowers', newValue.toString());
-          return newValue;
-        });
-      }
-      
-      console.log(`${type} tribute sent and saved to localStorage`);
-    } catch (error) {
-      console.error('Error sending tribute:', error);
-      setError(`发送${type === 'candle' ? '蜡烛' : '鲜花'}失败: ${error}`);
-    } finally {
-      setTimeout(() => setSending(null), 1000);
-    }
+    // 直接调用addTribute函数更新数据库
+    addTribute(type);
   };
 
   const isDark = theme === 'dark';
