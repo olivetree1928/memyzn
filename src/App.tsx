@@ -349,11 +349,11 @@ function App() {
             isDark ? 'bg-slate-800/50' : 'bg-white/70'
           } backdrop-blur-sm shadow-xl`}>
             <div className="flex flex-col gap-6">
-              <img src="/axbt3-jpxzf.svg" alt="杨振宁教授" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
-              <img src="/antq3-v33yv.svg" alt="纪念蜡烛" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
-              <img src="/av8xi-c1g47.svg" alt="纪念鲜花" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
-              <img src="/ac72a-m9s9z.svg" alt="杨振宁教授" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
-              <img src="/ady87-uj7n7.svg" alt="纪念蜡烛" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
+              <img src="./axbt3-jpxzf.svg" alt="杨振宁教授" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
+              <img src="./antq3-v33yv.svg" alt="纪念蜡烛" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
+              <img src="./av8xi-c1g47.svg" alt="纪念鲜花" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
+              <img src="./ac72a-m9s9z.svg" alt="杨振宁教授" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
+              <img src="./ady87-uj7n7.svg" alt="纪念蜡烛" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
             </div>
           </section>
 
