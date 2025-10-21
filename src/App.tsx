@@ -39,7 +39,7 @@ const content: Record<Language, Content> = {
     biography: {
       title: '生平简介',
       content: [
-        '杨振宁（Chen-Ning Franklin Yang），1922年生于安徽合肥，理论物理学家，诺贝尔物理学奖获得者。',
+        '杨振宁（Yang zhen ning），1922年生于安徽合肥，理论物理学家，诺贝尔物理学奖获得者。',
         '1942年毕业于西南联合大学物理系，1944年获清华大学硕士学位。1948年获芝加哥大学博士学位，师从恩里科·费米。',
         '1957年，杨振宁与李政道因"弱相互作用中宇称不守恒"理论获得诺贝尔物理学奖，成为首位获得诺贝尔奖的华人。',
         '杨振宁的研究涵盖粒子物理、统计力学和凝聚态物理等多个领域，对20世纪理论物理学的发展做出了重大贡献。',
@@ -351,8 +351,8 @@ function App() {
             <div className="flex flex-col gap-6">
               <img src="/axbt3-jpxzf.svg" alt="杨振宁教授" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
               <img src="/antq3-v33yv.svg" alt="纪念蜡烛" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
-              <img src="/ac72a-m9s9z.svg" alt="纪念鲜花" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
-              <img src="/av8xi-c1g47.svg" alt="杨振宁教授" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
+              <img src="/av8xi-c1g47.svg" alt="纪念鲜花" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
+              <img src="/ac72a-m9s9z.svg" alt="杨振宁教授" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
               <img src="/ady87-uj7n7.svg" alt="纪念蜡烛" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
             </div>
           </section>
