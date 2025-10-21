@@ -5,6 +5,9 @@ import { supabase } from './supabase';
 type Language = 'zh' | 'en';
 type Theme = 'light' | 'dark';
 
+// 定义贡品类型
+type TributeType = 'candle' | 'flower';
+
 interface Content {
   title: string;
   subtitle: string;
@@ -108,13 +111,90 @@ const content: Record<Language, Content> = {
 function App() {
   const [language, setLanguage] = useState<Language>('zh');
   const [theme, setTheme] = useState<Theme>('light');
-  // 使用本地模拟数据
-  const [candles, setCandles] = useState(50);  // 默认显示50个蜡烛
-  const [flowers, setFlowers] = useState(20);  // 默认显示20朵鲜花
+  // 初始值为0，将从数据库加载实际数据
+  const [candles, setCandles] = useState(0);
+  const [flowers, setFlowers] = useState(0);
   const [sending, setSending] = useState<'candle' | 'flower' | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const t = content[language];
+  
+  // 从数据库加载蜡烛和鲜花计数
+  useEffect(() => {
+    const fetchTributeCounts = async () => {
+      try {
+        setLoading(true);
+        // 从yzn_tributes表获取计数数据
+        const { data, error } = await supabase
+          .from('yzn_tributes')
+          .select('candles, flowers')
+          .single();
+          
+        if (error) {
+          console.error('Error fetching tribute counts:', error);
+          setError('加载数据失败');
+        } else if (data) {
+          // 更新状态
+          setCandles(data.candles || 0);
+          setFlowers(data.flowers || 0);
+        }
+      } catch (err) {
+        console.error('Error fetching tribute counts:', err);
+        setError('加载数据失败');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchTributeCounts();
+  }, []);
+  
+  // 添加贡品计数函数
+  const addTribute = async (type: TributeType) => {
+    try {
+      setSending(type);
+      
+      // 获取当前数据库中的计数
+      const { data: currentData, error: fetchError } = await supabase
+        .from('yzn_tributes')
+        .select('id, candles, flowers')
+        .single();
+        
+      if (fetchError) {
+        console.error('Error fetching current counts:', fetchError);
+        return;
+      }
+      
+      // 计算新的计数值
+      const newCandleCount = type === 'candle' ? (currentData.candles || 0) + 1 : currentData.candles;
+      const newFlowerCount = type === 'flower' ? (currentData.flowers || 0) + 1 : currentData.flowers;
+      
+      // 更新数据库中的计数
+      const { error: dbError } = await supabase
+        .from('yzn_tributes')
+        .update({ 
+          candles: newCandleCount,
+          flowers: newFlowerCount,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', currentData.id);
+        
+      if (dbError) {
+        console.error('Error updating database:', dbError);
+        // 即使数据库存储失败，也不影响用户体验
+      } else {
+        // 更新本地状态以匹配数据库
+        setCandles(newCandleCount);
+        setFlowers(newFlowerCount);
+      }
+      
+      setSending(null);
+    } catch (error) {
+      console.error('Error adding tribute:', error);
+      setError(`添加${type === 'candle' ? '蜡烛' : '鲜花'}失败`);
+      setSending(null);
+    }
+  };
 
   // 立即加载数据
   useEffect(() => {
@@ -350,8 +430,41 @@ function App() {
           } backdrop-blur-sm shadow-xl`}>
             <div className="flex flex-col gap-6">
               <img src="./axbt3-jpxzf.svg" alt="杨振宁教授" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
-              <img src="./antq3-v33yv.svg" alt="纪念蜡烛" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
-              <img src="./av8xi-c1g47.svg" alt="纪念鲜花" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
+              
+              <div className="relative">
+                <img 
+                  src="./antq3-v33yv.svg" 
+                  alt="纪念蜡烛" 
+                  className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md cursor-pointer hover:opacity-90 transition-opacity" 
+                  onClick={() => addTribute('candle')}
+                />
+                {sending === 'candle' && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-lg">
+                    <div className="animate-spin h-8 w-8 border-4 border-white border-t-transparent rounded-full"></div>
+                  </div>
+                )}
+                <div className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-full">
+                  {candles} 蜡烛
+                </div>
+              </div>
+              
+              <div className="relative">
+                <img 
+                  src="./av8xi-c1g47.svg" 
+                  alt="纪念鲜花" 
+                  className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md cursor-pointer hover:opacity-90 transition-opacity" 
+                  onClick={() => addTribute('flower')}
+                />
+                {sending === 'flower' && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-lg">
+                    <div className="animate-spin h-8 w-8 border-4 border-white border-t-transparent rounded-full"></div>
+                  </div>
+                )}
+                <div className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-full">
+                  {flowers} 鲜花
+                </div>
+              </div>
+              
               <img src="./ac72a-m9s9z.svg" alt="杨振宁教授" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
               <img src="./ady87-uj7n7.svg" alt="纪念蜡烛" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
             </div>
