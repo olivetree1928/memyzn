@@ -37,7 +37,7 @@ const content: Record<Language, Content> = {
   zh: {
     title: '杨振宁先生',
     subtitle: '纪念页',
-    dates: '1922年10月1日 - 2025年',
+    dates: '1922年10月1日 - 2025年10月18日12时',
     quote: '我希望年轻人不要把科学看得太神秘，科学就是追求真理的道路。',
     biography: {
       title: '生平简介',
@@ -73,7 +73,7 @@ const content: Record<Language, Content> = {
   en: {
     title: 'Professor Chen-Ning Yang',
     subtitle: 'In Memoriam',
-    dates: 'October 1, 1922 - 2025',
+    dates: 'October 1, 1922 - October 18, 2025',
     quote: 'I hope young people do not see science as too mysterious. Science is simply the path to pursue truth.',
     biography: {
       title: 'Biography',
@@ -388,44 +388,19 @@ function App() {
             isDark ? 'bg-slate-800/50' : 'bg-white/70'
           } backdrop-blur-sm shadow-xl`}>
             <div className="flex flex-col gap-6">
-              <img src="./axbt3-jpxzf.svg" alt="杨振宁教授" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
-              
-              <div className="relative">
-                <img 
-                  src="./antq3-v33yv.svg" 
-                  alt="纪念蜡烛" 
-                  className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md cursor-pointer hover:opacity-90 transition-opacity" 
-                  onClick={() => addTribute('candle')}
-                />
-                {sending === 'candle' && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-lg">
-                    <div className="animate-spin h-8 w-8 border-4 border-white border-t-transparent rounded-full"></div>
-                  </div>
-                )}
-                <div className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-full">
-                  {candles} 蜡烛
-                </div>
-              </div>
-              
-              <div className="relative">
-                <img 
-                  src="./av8xi-c1g47.svg" 
-                  alt="纪念鲜花" 
-                  className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md cursor-pointer hover:opacity-90 transition-opacity" 
-                  onClick={() => addTribute('flower')}
-                />
-                {sending === 'flower' && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-lg">
-                    <div className="animate-spin h-8 w-8 border-4 border-white border-t-transparent rounded-full"></div>
-                  </div>
-                )}
-                <div className="absolute bottom-4 right-4 bg-black bg-opacity-70 text-white px-3 py-1 rounded-full">
-                  {flowers} 鲜花
-                </div>
-              </div>
-              
-              <img src="./ac72a-m9s9z.svg" alt="杨振宁教授" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
-              <img src="./ady87-uj7n7.svg" alt="纪念蜡烛" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
+
+
+              <img src="./axbt3-jpxzf.svg" alt="少年" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
+
+           
+
+              <img src="./av8xi-c1g47.svg" alt="获奖" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
+              <img src="./ac72a-m9s9z.svg" alt="合影" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
+              <img src="./ady87-uj7n7.svg" alt="杨振宁教授" className="w-full max-w-2xl mx-auto h-auto rounded-lg shadow-md" />
+
+
+
+
             </div>
           </section>
 
